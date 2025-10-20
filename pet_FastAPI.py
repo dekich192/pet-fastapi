@@ -5,6 +5,7 @@ from fastapi.responses import StreamingResponse, FileResponse
 import time
 import uvicorn
 import asyncio
+import pytest
 
 app = FastAPI()
 
@@ -64,11 +65,11 @@ async def upload_file(upload_files: list[UploadFile] = File(...)):
             
 def iter_files(filename: str):
     with open(filename, "rb") as f:
-        while file.read(1024 * 1024):
+        while chunk := f.read(1024 * 1024):
             yield chunk
             
             
             
 @app.get("/download")
 async def download_file(filename: str):           #получение файла
-    return StreamingResponse(iter_files(filename), media_type= ...)
+    return StreamingResponse(iter_files(filename), media_type="application/octet-stream")
